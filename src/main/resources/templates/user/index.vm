@@ -13,19 +13,19 @@
     <meta name="_csrf_header" content="$_csrf.headerName"/>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/ionicons.min.css">
-    <link rel="stylesheet" href="../css/pace.css">
-    <link rel="stylesheet" href="../css/custom.css">
-    <link rel="stylesheet" href="../css/jBootsrapPage.css">
+    <link rel="stylesheet" href="/blog/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/blog/css/ionicons.min.css">
+    <link rel="stylesheet" href="/blog/css/pace.css">
+    <link rel="stylesheet" href="/blog/css/custom.css">
+    <link rel="stylesheet" href="/blog/css/jBootsrapPage.css">
 
     <!-- js -->
-    <script src="../js/jquery-2.1.3.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/pace.min.js"></script>
-    <script src="../js/modernizr.custom.js"></script>
-    <script src="../js/jBootstrapPage.js" type="text/javascript"></script>
-    <script src="../js/csrf.js"></script>
+    <script src="/blog/js/jquery-2.1.3.min.js"></script>
+    <script src="/blog/js/bootstrap.min.js"></script>
+    <script src="/blog/js/pace.min.js"></script>
+    <script src="/blog/js/modernizr.custom.js"></script>
+    <script src="/blog/js/jBootstrapPage.js" type="text/javascript"></script>
+    <script src="/blog/js/csrf.js"></script>
 </head>
 
 <body>
@@ -153,9 +153,9 @@
     </nav>
 </div>
 
-<script src="../js/script.js"></script>
+<script src="/blog/js/script.js"></script>
 
-<script src="../js/blog/main.js"></script>
+<script src="/blog/js/blog/main.js"></script>
 
 </body>
 </html>

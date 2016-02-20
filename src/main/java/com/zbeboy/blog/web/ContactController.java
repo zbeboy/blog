@@ -24,7 +24,7 @@ public class ContactController {
         this.contactRepository = contactRepository;
     }
 
-    @RequestMapping("/blog/saveContact")
+    @RequestMapping("/saveContact")
     public String contact(ContactEntity contactEntity, HttpServletRequest request, ModelMap modelMap) {
         if (!StringUtils.isEmpty(contactEntity)) {
             contactRepository.save(contactEntity);

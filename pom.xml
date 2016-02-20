@@ -74,7 +74,7 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- Developer tools -->
+        <!-- Developer tools note:in glassfish need kill-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

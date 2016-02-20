@@ -28,6 +28,9 @@ import javax.sql.DataSource;
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 
+    /**
+     * 生成war包时需要
+     */
    /* @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);
@@ -54,7 +57,7 @@ public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws Exception {
         new SpringApplicationBuilder(Application.class).run(args);
-        /*SpringApplication.run(Application.class, args);*/
+        /*SpringApplication.run(Application.class, args);//生成war包时需要*/
     }
 
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
