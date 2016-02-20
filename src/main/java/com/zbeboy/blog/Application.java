@@ -1,9 +1,11 @@
 package com.zbeboy.blog;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,14 +26,12 @@ import javax.sql.DataSource;
  */
 @EnableAutoConfiguration
 @ComponentScan
-public class Application extends WebMvcConfigurerAdapter {
+public class Application extends SpringBootServletInitializer {
 
-
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
-    }
+   /* @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }*/
 
     @Bean
     public ApplicationSecurity applicationSecurity() {
@@ -39,14 +39,14 @@ public class Application extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public static Md5PasswordEncoder md5(){
+    public static Md5PasswordEncoder md5() {
         Md5PasswordEncoder md5 = new Md5PasswordEncoder();
         md5.setEncodeHashAsBase64(false);
         return md5;
     }
 
     @Bean
-    public static JdbcTokenRepositoryImpl jdbcTokenRepository(DataSource dataSource){
+    public static JdbcTokenRepositoryImpl jdbcTokenRepository(DataSource dataSource) {
         JdbcTokenRepositoryImpl j = new JdbcTokenRepositoryImpl();
         j.setDataSource(dataSource);
         return j;
@@ -54,19 +54,20 @@ public class Application extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) throws Exception {
         new SpringApplicationBuilder(Application.class).run(args);
+        /*SpringApplication.run(Application.class, args);*/
     }
 
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
     protected static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
         @Autowired
-        private  DataSource dataSource;
+        private DataSource dataSource;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests().antMatchers("/css/**", "/js/**", "/fonts/**", "/images/**", "/files/**","/").permitAll()
+            http.authorizeRequests().antMatchers("/css/**", "/js/**", "/fonts/**", "/images/**", "/files/**", "/").permitAll()
                     .and().formLogin().loginPage("/login").defaultSuccessUrl("/user/home", true)
-                    .failureUrl("/login?error").permitAll().and().sessionManagement().invalidSessionUrl("/login")
+                    .failureUrl("/loginError").permitAll().and().sessionManagement().invalidSessionUrl("/login")
                     .and().logout().logoutSuccessUrl("/").permitAll().invalidateHttpSession(true)
                     .and().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
                     .and().authorizeRequests().antMatchers("/user/**").hasAnyRole("ADMIN,USER");

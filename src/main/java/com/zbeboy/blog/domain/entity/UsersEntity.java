@@ -15,16 +15,21 @@ import java.io.Serializable;
 public class UsersEntity {
 
     @Id
-    @NotNull
-    @Size(max = 200,message = "用户名在200字符之间!")
+    @Size(max = 200, message = "用户名在200字符之间!")
     @Column(name = "username")
     private String username;
+
     @Column(nullable = false)
-    @NotNull
     private String password;
+
     @Column(nullable = false)
-    @NotNull
     private boolean enabled;
+
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "is_pass")
+    private boolean is_pass;
 
     public String getUsername() {
         return username;
@@ -50,12 +55,30 @@ public class UsersEntity {
         this.enabled = enabled;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public boolean is_pass() {
+        return is_pass;
+    }
+
+    public void setIs_pass(boolean is_pass) {
+        this.is_pass = is_pass;
+    }
+
     @Override
     public String toString() {
         return "UsersEntity{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
+                ", code='" + code + '\'' +
+                ", is_pass=" + is_pass +
                 '}';
     }
 }

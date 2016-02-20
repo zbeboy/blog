@@ -13,20 +13,20 @@ import java.io.Serializable;
 public class AuthoritiesEntity implements Serializable{
 
     @Id
-    @ManyToOne
-    private UsersEntity usersEntity;
+    @Column(name = "username")
+    private String username;
+
     @Id
-    @NotNull
     @Size(max = 50,message = "权限应在50字符之间!")
     @Column(nullable = false)
     private String authority;
 
-    public UsersEntity getUsersEntity() {
-        return usersEntity;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUsersEntity(UsersEntity usersEntity) {
-        this.usersEntity = usersEntity;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getAuthority() {
@@ -44,14 +44,14 @@ public class AuthoritiesEntity implements Serializable{
 
         AuthoritiesEntity that = (AuthoritiesEntity) o;
 
-        if (usersEntity != null ? !usersEntity.equals(that.usersEntity) : that.usersEntity != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
         return authority != null ? authority.equals(that.authority) : that.authority == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = usersEntity != null ? usersEntity.hashCode() : 0;
+        int result = username != null ? username.hashCode() : 0;
         result = 31 * result + (authority != null ? authority.hashCode() : 0);
         return result;
     }
@@ -59,7 +59,7 @@ public class AuthoritiesEntity implements Serializable{
     @Override
     public String toString() {
         return "AuthoritiesEntity{" +
-                "usersEntity=" + usersEntity +
+                "username=" + username +
                 ", authority='" + authority + '\'' +
                 '}';
     }

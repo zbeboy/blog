@@ -20,11 +20,17 @@ public class ArticleVo {
 
     private String blogContent;
 
-    private String  blogCreateTime;
+    private String blogCreateTime;
+
+    private int blogTypeId;
 
     private String blogType;
 
+    private String petName;
+
     private String username;
+
+    private int archivesId;
 
     private String formatTime;
 
@@ -56,8 +62,16 @@ public class ArticleVo {
         return blogCreateTime;
     }
 
-    public void setBlogCreateTime(String  blogCreateTime) {
+    public void setBlogCreateTime(String blogCreateTime) {
         this.blogCreateTime = blogCreateTime;
+    }
+
+    public int getBlogTypeId() {
+        return blogTypeId;
+    }
+
+    public void setBlogTypeId(int blogTypeId) {
+        this.blogTypeId = blogTypeId;
     }
 
     public String getBlogType() {
@@ -68,12 +82,28 @@ public class ArticleVo {
         this.blogType = blogType;
     }
 
+    public String getPetName() {
+        return petName;
+    }
+
+    public void setPetName(String petName) {
+        this.petName = petName;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getArchivesId() {
+        return archivesId;
+    }
+
+    public void setArchivesId(int archivesId) {
+        this.archivesId = archivesId;
     }
 
     public String getFormatTime() {
@@ -90,9 +120,12 @@ public class ArticleVo {
                 "id=" + id +
                 ", blogTitle='" + blogTitle + '\'' +
                 ", blogContent='" + blogContent + '\'' +
-                ", blogCreateTime=" + blogCreateTime +
+                ", blogCreateTime='" + blogCreateTime + '\'' +
+                ", blogTypeId=" + blogTypeId +
                 ", blogType='" + blogType + '\'' +
+                ", petName='" + petName + '\'' +
                 ", username='" + username + '\'' +
+                ", archivesId=" + archivesId +
                 ", formatTime='" + formatTime + '\'' +
                 '}';
     }

@@ -17,20 +17,20 @@ public class ContactEntity  {
     @GeneratedValue
     @Column(name = "id")
     private int id;
+
     @Column(name = "contact_username",nullable = false)
-    @NotNull
     @Size(max = 64,message = "用户名应为64字符之间!")
     private String contactUsername;
+
     @Column(name = "email",nullable = false)
-    @NotNull
     @Size(max = 200,message = "邮箱应为200字符之间!")
     private String email;
+
     @Column(name = "subject",nullable = false)
-    @NotNull
     @Size(max = 50,message = "主题应为50字符之间!")
     private String subject;
+
     @Column(name = "message",nullable = false)
-    @NotNull
     @Size(max = 200,message = "消息应为200字符之间!")
     private String message;
 

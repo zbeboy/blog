@@ -8,15 +8,15 @@ import javax.validation.constraints.Pattern;
  */
 public class RegistVo {
     @NotNull
-    @Pattern(regexp = "/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/")
+    @Pattern(regexp = "^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$",message = "邮箱格式不正确！")
     private String email;
 
     @NotNull
-    @Pattern(regexp = "/^(\\w){6,20}$/")
+    @Pattern(regexp = "^(\\w){6,20}$",message = "密码为6~20个任意字符！")
     private String regist_password;
 
     @NotNull
-    @Pattern(regexp = "/^(\\w){6,20}$/")
+    @Pattern(regexp = "^(\\w){6,20}$",message = "密码为6~20个任意字符！")
     private String confirm_password;
 
     public String getEmail() {

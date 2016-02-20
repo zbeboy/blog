@@ -1,5 +1,5 @@
 /**
- * Created by Administrator on 2016/2/15.
+ * Created by lenovo on 2016-02-20.
  */
 var article_id = 0;
 var article_title = '';
@@ -16,13 +16,20 @@ var article_post_num = 0;
 var archviesId = 0;
 var typeId = 0;
 
+var pageSwitch = false;
+
 function createPage(data) {
-    $(".pagination").jBootstrapPage({
-        pageSize : data.pagination.pageSize,
-        total : data.pagination.totalDatas,
-        maxPageButton:data.pagination.buttons,
-        onPageClicked: function(obj, pageIndex) {
-            nextPage(pageIndex,archviesId,typeId);
+    $('.pagination').twbsPagination({
+        totalPages: data.pagination.totalPages,
+        visiblePages: data.pagination.buttons,
+        version: '1.1',
+        onPageClick: function (event, page) {
+            if (pageSwitch) {
+                sendAjax(page-1, archviesId, typeId);
+            } else {
+                pageSwitch = true;
+            }
+
         }
     });
 }
@@ -46,7 +53,7 @@ function showDatas(data) {
         var article_template = "<article class='post post-" + article_post_num + "'>" +
             "<header class='entry-header'>" +
             "<h1 class='entry-title'>" +
-            "<a href='/blog/article?id=" + article_id + "'>" + article_title + "</a>" +
+            "<a href='/article?id=" + article_id + "'>" + article_title + "</a>" +
             "</h1>" +
             "<div class='entry-meta'>" +
             "<span class='post-category'><a href='javascript:;' onclick='sendAjax(0,0," + article_type_id + ");' >" + article_type + "</a></span>" +
@@ -58,7 +65,7 @@ function showDatas(data) {
             "<div class='entry-content clearfix'>" +
             "<p>" + article_content + "</p>" +
             "<div class='read-more cl-effect-14'>" +
-            "<a href='/blog/article?id=" + article_id + "' class='more-link'>Continue reading <span class='meta-nav'>→</span></a>" +
+            "<a href='/article?id=" + article_id + "' class='more-link'>Continue reading <span class='meta-nav'>→</span></a>" +
             "</div>" +
             "</div>" +
             " </article>";
@@ -73,25 +80,15 @@ function sendAjax(page, archviesId, typeId) {
         'archviesId': archviesId,
         'typeId': typeId
     }, function (data) {
-        if(data.items.length>0){
-            showDatas(data);
-            createPage(data);
-        }
-    }, 'json');
-}
-
-function nextPage(page,archviesId, typeId){
-    $.post('/blog/articleDatas', {
-        'page': page,
-        'archviesId': archviesId,
-        'typeId': typeId
-    }, function (data) {
-        if(data.items.length>0){
-            showDatas(data);
-        }
+        showDatas(data);
+        createPage(data);
     }, 'json');
 }
 
 $(document).ready(function () {
     sendAjax(0, archviesId, typeId);
 });
+
+function sendBlog(){
+    window.location.href="/blog/user/sendBlog";
+}
