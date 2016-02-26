@@ -37,7 +37,7 @@ function checkEmail(obj) {
         emailIsRight = false;
         return;
     } else {
-        $.post('/blog/checkEmail', {
+        $.post('/checkEmail', {
             'email': $(obj).val()
         }, function (data) {
             if (data.state) {
@@ -96,7 +96,7 @@ function regist() {
                 $('#checkConfirmPassword').removeClass('has-success').addClass('has-error');
             } else {
                 $('#checkConfirmPassword').removeClass('has-error').addClass('has-success');
-                $.post('/blog/regist', {
+                $.post('/regist', {
                         'email': $('#email').val(),
                         'regist_password': $('#regist_password').val(),
                         'confirm_password': $('#confirm_password').val()

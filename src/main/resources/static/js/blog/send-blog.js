@@ -50,11 +50,11 @@ function saveArticle() {
 
 function send(data) {
 
-    $.post('/blog/user/saveArticle', {
+    $.post('/user/saveArticle', {
         'articledatas': data
     }, function (data) {
         if (data.state) {
-            window.location.href = "/blog";
+            window.location.href = "/";
         } else {
             Messenger().post({
                 message: data.msg,

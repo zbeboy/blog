@@ -46,7 +46,7 @@ function showDatas(data) {
         var article_template = "<article class='post post-" + article_post_num + "'>" +
             "<header class='entry-header'>" +
             "<h1 class='entry-title'>" +
-            "<a href='/blog/article?id=" + article_id + "'>" + article_title + "</a>" +
+            "<a href='/article?id=" + article_id + "'>" + article_title + "</a>" +
             "</h1>" +
             "<div class='entry-meta'>" +
             "<span class='post-category'><a href='javascript:;' onclick='sendAjax(0,0," + article_type_id + ");' >" + article_type + "</a></span>" +
@@ -58,7 +58,7 @@ function showDatas(data) {
             "<div class='entry-content clearfix'>" +
             "<p>" + article_content + "</p>" +
             "<div class='read-more cl-effect-14'>" +
-            "<a href='/blog/article?id=" + article_id + "' class='more-link'>Continue reading <span class='meta-nav'>→</span></a>" +
+            "<a href='/article?id=" + article_id + "' class='more-link'>Continue reading <span class='meta-nav'>→</span></a>" +
             "</div>" +
             "</div>" +
             " </article>";
@@ -68,7 +68,7 @@ function showDatas(data) {
 }
 
 function sendAjax(page, archviesId, typeId) {
-    $.post('/blog/articleDatas', {
+    $.post('/articleDatas', {
         'page': page,
         'archviesId': archviesId,
         'typeId': typeId
@@ -81,7 +81,7 @@ function sendAjax(page, archviesId, typeId) {
 }
 
 function nextPage(page,archviesId, typeId){
-    $.post('/blog/articleDatas', {
+    $.post('/articleDatas', {
         'page': page,
         'archviesId': archviesId,
         'typeId': typeId
@@ -97,5 +97,5 @@ $(document).ready(function () {
 });
 
 function sendBlog(){
-    window.location.href="/blog/user/sendBlog";
+    window.location.href="/user/sendBlog";
 }

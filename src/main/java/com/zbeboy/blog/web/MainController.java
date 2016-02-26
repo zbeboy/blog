@@ -91,7 +91,7 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping(value = "/blog")
+    @RequestMapping(value = "/full")
     public String blog(ModelMap modelMap,HttpServletRequest request) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrfToken != null) {
