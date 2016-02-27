@@ -81,10 +81,10 @@
 <div class="content-body">
     <div class="container">
         <div class="row">
-            <div class="pull-right">
-                <button class="btn btn-default" onclick="sendBlog();" >send blog！</button>
-            </div>
             <main class="col-md-12" >
+                <div class="pull-right">
+                    <button class="btn btn-default" onclick="sendBlog();" >send blog！</button>
+                </div>
                 <div id="articleDatas">
 
                 </div>
