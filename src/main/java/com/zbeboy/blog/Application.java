@@ -57,7 +57,7 @@ public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws Exception {
         new SpringApplicationBuilder(Application.class).run(args);
-       /* SpringApplication.run(Application.class, args);//生成war包时需要*/
+        /*SpringApplication.run(Application.class, args);//生成war包时需要*/
     }
 
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
