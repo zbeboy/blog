@@ -6,6 +6,7 @@ package com.zbeboy.blog.commons;
 public class WorkBook {
     // article data pagination
     private final static int article_page_size = 4;
+
     private final static int article_buttons = 7;
 
     public static int getArticle_page_size() {
