@@ -1,9 +1,10 @@
-package com.zbeboy.blog.commons;
+package com.zbeboy.blog.books;
 
 /**
  * Created by Administrator on 2016/2/15.
  */
 public class WorkBook {
+
     // article data pagination
     private final static int article_page_size = 4;
 

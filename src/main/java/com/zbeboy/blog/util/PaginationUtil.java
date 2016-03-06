@@ -1,6 +1,6 @@
 package com.zbeboy.blog.util;
 
-import com.zbeboy.blog.commons.WorkBook;
+import com.zbeboy.blog.books.WorkBook;
 import com.zbeboy.blog.vo.PaginationVo;
 
 /**

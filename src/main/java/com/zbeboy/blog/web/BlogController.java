@@ -1,7 +1,7 @@
 package com.zbeboy.blog.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zbeboy.blog.commons.WorkBook;
+import com.zbeboy.blog.books.WorkBook;
 import com.zbeboy.blog.domain.entity.ArchivesEntity;
 import com.zbeboy.blog.domain.entity.BlogContentEntity;
 import com.zbeboy.blog.domain.entity.BlogContentTypeEntity;
