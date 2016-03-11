@@ -84,7 +84,7 @@
             <main class="col-md-12" >
                 <div class="pull-right">
                     <button class="btn btn-default" onclick="sendBlog();" >send blog！</button>
-                </div>
+                </div><br/>
                 <div id="articleDatas">
 
                 </div>
