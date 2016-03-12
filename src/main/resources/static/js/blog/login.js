@@ -1,22 +1,47 @@
 /**
  * Created by Administrator on 2016/2/19.
  */
-
-
 $(document).ready(function () {
-    $('#registForm').hide();
     $('#username').focus();
-
+    initCaptcha('#captcha');
     Messenger.options = {
         extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
         theme: 'air'
     };
 });
 
+/**
+ * 初始化验证码区
+ */
+function initCaptcha(target) {
+    var handler = function (captchaObj) {
+        // 将验证码加到id为captcha的元素里
+        captchaObj.appendTo(target);
+    };
+    $.ajax({
+        // 获取id，challenge，success（是否启用failback）
+        url: '/startCaptcha',
+        type: 'get',
+        dataType: 'json', // 使用jsonp格式
+        success: function (data) {
+            // 使用initGeetest接口
+            // 参数1：配置参数，与创建Geetest实例时接受的参数一致
+            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                product: 'embed', // 产品形式
+                offline: !data.success
+            }, handler);
+        }
+    });
+}
+
 function toRegist() {
-    $('#registForm').show();
-    $('#loginForm').hide();
+    $('#registForm').css('display','block');
+    $('#loginForm').css('display','none');
     $('#email').focus();
+    initCaptcha('#registCaptcha');
 }
 
 var emailIsRight = false;
@@ -35,7 +60,7 @@ function checkEmail(obj) {
         $('#registError').text('邮箱格式错误！');
         $('#checkEmail').removeClass('has-success').addClass('has-error');
         emailIsRight = false;
-        return;
+
     } else {
         $.post('/checkEmail', {
             'email': $(obj).val()
@@ -69,7 +94,7 @@ function checkPassword(obj) {
 
 function checkConfirmPassword(obj) {
     if (!passwordIsRight) {
-        return;
+
     } else {
         if ($('#regist_password').val() != $(obj).val()) {
             $('#registError').text('请确认密码！');
@@ -81,44 +106,28 @@ function checkConfirmPassword(obj) {
     }
 }
 
+/**
+ * 点击注册
+ */
 function regist() {
-
-    if (emailIsRight) {
-        var regex = /^(\w){6,20}$/;
-        if (!regex.test($('#regist_password').val())) {
-            $('#registError').text('密码为6~20个任意字符！');
-            $('#checkPassword').removeClass('has-success').addClass('has-error');
-            return;
-        } else {
-            if ($('#regist_password').val() != $('#confirm_password').val()) {
-                $('#registError').text('请确认密码！');
-                $('#checkPassword').removeClass('has-error').addClass('has-success');
-                $('#checkConfirmPassword').removeClass('has-success').addClass('has-error');
-            } else {
-                $('#checkConfirmPassword').removeClass('has-error').addClass('has-success');
-                $.post('/regist', {
-                        'email': $('#email').val(),
-                        'regist_password': $('#regist_password').val(),
-                        'confirm_password': $('#confirm_password').val()
-                    },
-                    function (data) {
-                        if (data.state) {
-                            $('#registError').text('');
-                            Messenger().post(data.msg);
-                            setTimeout(function () {
-                                window.location.reload(true);
-                            }, 3000);
-                        } else {
-                            $('#registError').text(data.msg);
-                        }
-                    }, 'json');
-            }
-        }
-    }
+    validateRegist('#registData');
 }
 
-function validate(data) {
-    var email = data.username.value;
+/**
+ * 点击登录
+ */
+function login(){
+    validateLogin('#loginData');
+}
+
+
+/**
+ * 登录提交时检验
+ * @param data
+ * @returns {boolean}
+ */
+function validateLogin(data) {
+    var email = $('#username').val();
     var emailRegex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$/;
     if (!emailRegex.test(email)) {
         $('#loginError').text('请填写正确的邮箱！');
@@ -127,16 +136,87 @@ function validate(data) {
         return false;
     }
 
-    var password = data.password.value;
+    var password = $('#password').val();
     var passwordRegex = /^(\w){6,20}$/;
     if (!passwordRegex.test(password)) {
-        $('#loginError').text('请填写密码！');
+        $('#loginError').text('请填写正确的密码！');
         data.password.focus();
         data.password.select();
         return false;
     }
 
-    return true;
+    valideCaptcha(data,'submitLogin()','#loginError');
+}
+
+/**
+ * 注册时检验
+ * @param data
+ */
+function validateRegist(data){
+    if (emailIsRight) {
+        var regex = /^(\w){6,20}$/;
+        if (!regex.test($('#regist_password').val())) {
+            $('#registError').text('密码为6~20个任意字符！');
+            $('#checkPassword').removeClass('has-success').addClass('has-error');
+
+        } else {
+            if ($('#regist_password').val() != $('#confirm_password').val()) {
+                $('#registError').text('请确认密码！');
+                $('#checkPassword').removeClass('has-error').addClass('has-success');
+                $('#checkConfirmPassword').removeClass('has-success').addClass('has-error');
+            } else {
+                $('#checkConfirmPassword').removeClass('has-error').addClass('has-success');
+                valideCaptcha(data,'submitRegist()','#registError');
+            }
+        }
+    }
+}
+
+/**
+ * 检验验证码
+ */
+function valideCaptcha(data,func,errorId) {
+    $.ajax({
+        type: 'POST',
+        url: '/verifyCaptcha',
+        data: $(data).serialize(),
+        success: function (data) {
+            if (data.state) {
+                eval(func);
+            } else {
+                $(errorId).text(data.msg);
+            }
+        }
+    });
+}
+
+/**
+ * 提交登录数据
+ */
+function submitLogin(){
+    $('#loginData').submit();
+}
+
+/**
+ * 提交注册数据
+ */
+function submitRegist(){
+    $.post('/regist', {
+            'email': $('#email').val(),
+            'regist_password': $('#regist_password').val(),
+            'confirm_password': $('#confirm_password').val()
+        },
+        function (data) {
+            if (data.state) {
+                $('#registError').text('');
+                Messenger().post(data.msg);
+                setTimeout(function () {
+                    window.location.reload(true);
+                }, 3000);
+            } else {
+                $('#registError').text(data.msg);
+            }
+        }, 'json');
 }
 
 

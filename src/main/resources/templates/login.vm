@@ -75,7 +75,7 @@
         <div class="row">
             <main class="col-md-12">
 
-                <div class="col-sm-6 col-sm-offset-3 form-box" id="loginForm">
+                <div class="col-sm-6 col-sm-offset-3 form-box" id="loginForm" style="display:block;" >
                     <div class="form-top">
                         <div class="pull-left">
                             <h3>Login to our site</h3>
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <div class="form-bottom">
-                        <form role="form" action="/login" method="post" onsubmit="return validate(this);" >
+                        <form role="form" action="/login" method="post" id="loginData">
                             <div class="form-group">
                                 <label class="sr-only" for="username">Email</label>
                                 <input type="text" name="username" placeholder="Email..."
@@ -97,6 +97,9 @@
                                 <input type="password" name="password" placeholder="Password..."
                                        class="form-password form-control" id="password" required="required" >
                             </div>
+                            <div class="form-group">
+                                <div id="captcha"></div>
+                            </div>
                             <div class="pull-right">
                                 <a href="javascript:;" onclick="toRegist();" class="text-primary">Regist Now</a>
                             </div>
@@ -106,13 +109,13 @@
                                     账号或密码错误！
                                 #end
                             </p>
-                            <button type="submit" class="btn">Sign in!</button>
+                            <button type="button" onclick="login();" class="btn">Sign in!</button>
                             <input type="hidden" value="$_csrf.token" name="_csrf"/>
                         </form>
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-sm-offset-3 form-box" id="registForm">
+                <div class="col-sm-6 col-sm-offset-3 form-box" id="registForm" style="display:none;">
                     <div class="form-top">
                         <div class="pull-left">
                             <h3>Regist to our site</h3>
@@ -123,7 +126,7 @@
                         </div>
                     </div>
                     <div class="form-bottom">
-                        <form role="form" method="post">
+                        <form role="form" method="post" id="registData">
                             <div id="checkEmail" class="form-group">
                                 <label class="sr-only" for="email">Email</label>
                                 <input type="text" name="email" onblur="checkEmail(this);" placeholder="Email..."
@@ -140,6 +143,9 @@
                                 <input type="password" name="confirm_password" onblur="checkConfirmPassword(this);"
                                        placeholder="Confirm password..."
                                        class="form-password form-control" id="confirm_password">
+                            </div>
+                            <div class="form-group">
+                                <div id="registCaptcha"></div>
                             </div>
                             <p class="text-danger" id="registError"></p>
                             <button type="button" onclick="regist();" class="btn">Regist!</button>
@@ -180,6 +186,7 @@
 </div>
 
 <script src="/js/script.js"></script>
+<script src="http://static.geetest.com/static/tools/gt.js"></script>
 <script src="/js/blog/login.js"></script>
 
 </body>

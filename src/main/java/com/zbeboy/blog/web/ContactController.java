@@ -2,6 +2,7 @@ package com.zbeboy.blog.web;
 
 import com.zbeboy.blog.domain.entity.ContactEntity;
 import com.zbeboy.blog.domain.repository.ContactRepository;
+import com.zbeboy.blog.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -18,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 public class ContactController {
 
     private final ContactRepository contactRepository;
+
+    @Resource
+    private UsersService usersService;
 
     @Autowired
     public ContactController(ContactRepository contactRepository) {
@@ -38,6 +43,11 @@ public class ContactController {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrfToken != null) {
             modelMap.addAttribute("_csrf", csrfToken);
+        }
+        if(!StringUtils.isEmpty(usersService.getUserName())){
+            modelMap.addAttribute("is_login",true);
+        } else {
+            modelMap.addAttribute("is_login",false);
         }
         return "contact";
     }

@@ -1,7 +1,10 @@
 package com.zbeboy.blog.web;
 
+import com.zbeboy.blog.data.AjaxData;
 import com.zbeboy.blog.domain.entity.*;
 import com.zbeboy.blog.domain.repository.*;
+import com.zbeboy.blog.geettest.GeetestConfig;
+import com.zbeboy.blog.geettest.GeetestLib;
 import com.zbeboy.blog.service.UsersService;
 import com.zbeboy.blog.util.MD5Util;
 import com.zbeboy.blog.vo.PostsVo;
@@ -148,6 +151,71 @@ public class MainController {
             modelMap.addAttribute("_csrf", csrfToken);
         }
         return "login";
+    }
+
+    @RequestMapping(value = "/startCaptcha",method = RequestMethod.GET)
+    @ResponseBody
+    public String startCaptcha(HttpServletRequest request){
+        GeetestLib gtSdk = new GeetestLib(GeetestConfig.getCaptcha_id(), GeetestConfig.getPrivate_key());
+
+        String resStr = "{}";
+
+        //自定义userid
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        String userid = csrfToken.toString();
+
+        //进行验证预处理
+        int gtServerStatus = gtSdk.preProcess(userid);
+
+        //将服务器状态设置到session中
+        request.getSession().setAttribute(gtSdk.gtServerStatusSessionKey, gtServerStatus);
+        //将userid设置到session中
+        request.getSession().setAttribute("userid", userid);
+
+        resStr = gtSdk.getResponseStr();
+
+        return resStr;
+    }
+
+    @RequestMapping(value = "/verifyCaptcha",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxData verifyCaptcha(HttpServletRequest request){
+        GeetestLib gtSdk = new GeetestLib(GeetestConfig.getCaptcha_id(), GeetestConfig.getPrivate_key());
+
+        String challenge = request.getParameter(GeetestLib.fn_geetest_challenge);
+        String validate = request.getParameter(GeetestLib.fn_geetest_validate);
+        String seccode = request.getParameter(GeetestLib.fn_geetest_seccode);
+
+        //从session中获取gt-server状态
+        int gt_server_status_code = (Integer) request.getSession().getAttribute(gtSdk.gtServerStatusSessionKey);
+
+        //从session中获取userid
+        String userid = (String)request.getSession().getAttribute("userid");
+
+        int gtResult = 0;
+
+        if (gt_server_status_code == 1) {
+            //gt-server正常，向gt-server进行二次验证
+
+            gtResult = gtSdk.enhencedValidateRequest(challenge, validate, seccode, userid);
+            System.out.println(gtResult);
+        } else {
+            // gt-server非正常情况下，进行failback模式验证
+
+            System.out.println("failback:use your own server captcha validate");
+            gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
+            System.out.println(gtResult);
+        }
+
+
+        if (gtResult == 1) {
+            // 验证成功
+            return new AjaxData().success().msg(gtSdk.getVersionInfo());
+        }
+        else {
+            // 验证失败
+            return new AjaxData().failed().msg("验证码错误!");
+        }
     }
 
     @RequestMapping(value = "/loginError", method = RequestMethod.GET)
