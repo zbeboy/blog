@@ -194,6 +194,8 @@ function valideCaptcha(data,func,errorId) {
  * 提交登录数据
  */
 function submitLogin(){
+    //显示遮罩
+    $('#dataRegion').showLoading();
     $('#loginData').submit();
 }
 
@@ -201,12 +203,16 @@ function submitLogin(){
  * 提交注册数据
  */
 function submitRegist(){
+    //显示遮罩
+    $('#dataRegion').showLoading();
     $.post('/regist', {
             'email': $('#email').val(),
             'regist_password': $('#regist_password').val(),
             'confirm_password': $('#confirm_password').val()
         },
         function (data) {
+            //去除遮罩
+            $('#dataRegion').hideLoading();
             if (data.state) {
                 $('#registError').text('');
                 Messenger().post(data.msg);

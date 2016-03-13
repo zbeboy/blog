@@ -8,7 +8,7 @@ public class WorkBook {
     // article data pagination
     private final static int article_page_size = 4;
 
-    private final static int article_buttons = 7;
+    private final static int article_buttons = 3;
 
     public static int getArticle_page_size() {
         return article_page_size;

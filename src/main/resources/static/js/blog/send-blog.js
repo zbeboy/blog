@@ -18,7 +18,7 @@ function article(title, type, content) {
 }
 
 function saveArticle() {
-    var articleDatas = new Array();
+    var articleDatas = [];
     var title = $('#title').val();
     var type = $('#type option:selected').val();
     var contentArray = $('.content');
@@ -49,10 +49,13 @@ function saveArticle() {
 }
 
 function send(data) {
-
+    //显示遮罩
+    $('#dataRegion').showLoading();
     $.post('/user/saveArticle', {
         'articledatas': data
     }, function (data) {
+        //去除遮罩
+        $('#dataRegion').hideLoading();
         if (data.state) {
             window.location.href = "/";
         } else {
