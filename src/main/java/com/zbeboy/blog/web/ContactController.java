@@ -3,6 +3,7 @@ package com.zbeboy.blog.web;
 import com.zbeboy.blog.domain.entity.ContactEntity;
 import com.zbeboy.blog.domain.repository.ContactRepository;
 import com.zbeboy.blog.service.UsersService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ContactController {
 
+    private static Logger logger = Logger.getLogger(ContactController.class);
+
     private final ContactRepository contactRepository;
 
     @Resource
@@ -33,7 +36,6 @@ public class ContactController {
     public String contact(ContactEntity contactEntity, HttpServletRequest request, ModelMap modelMap) {
         if (!StringUtils.isEmpty(contactEntity)) {
             contactRepository.save(contactEntity);
-            System.out.println("hahahh");
             modelMap.addAttribute("contactError", false);
             modelMap.addAttribute("errorMsg", "");
         } else {
@@ -44,11 +46,7 @@ public class ContactController {
         if (csrfToken != null) {
             modelMap.addAttribute("_csrf", csrfToken);
         }
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
         return "contact";
     }
 }

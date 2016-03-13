@@ -13,6 +13,7 @@ import com.zbeboy.blog.vo.ArticleVo;
 import com.zbeboy.blog.vo.PaginationVo;
 import com.zbeboy.blog.vo.PostsVo;
 import com.zbeboy.blog.vo.SendBlogVo;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -35,6 +36,8 @@ import java.util.*;
  */
 @Controller
 public class BlogController {
+
+    private static Logger logger = Logger.getLogger(BlogController.class);
 
     private final BlogContentRepository blogContentRepository;
 
@@ -111,11 +114,7 @@ public class BlogController {
     @RequestMapping("/article")
     public String singleArticle(@RequestParam(value = "id", defaultValue = "0") int blogSimpleContentId, ModelMap modelMap,
                                 HttpServletRequest request) {
-        if (!StringUtils.isEmpty(usersService.getUserName())) {
-            modelMap.addAttribute("is_login", true);
-        } else {
-            modelMap.addAttribute("is_login", false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
         if (blogSimpleContentId > 0) {
             BlogSimpleContentEntity blogSimpleContentEntity = blogSimpleContentRepository.findOne(blogSimpleContentId);
             List<BlogContentEntity> blogContentEntities = new ArrayList<>();
@@ -210,11 +209,7 @@ public class BlogController {
 
     @RequestMapping(value = "/search")
     public String search(@RequestParam(value = "search") String search, ModelMap modelMap, HttpServletRequest request) {
-        if (!StringUtils.isEmpty(usersService.getUserName())) {
-            modelMap.addAttribute("is_login", true);
-        } else {
-            modelMap.addAttribute("is_login", false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrfToken != null) {

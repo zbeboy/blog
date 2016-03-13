@@ -9,6 +9,7 @@ import com.zbeboy.blog.service.UsersService;
 import com.zbeboy.blog.util.MD5Util;
 import com.zbeboy.blog.vo.PostsVo;
 import com.zbeboy.blog.vo.RegistVo;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +37,8 @@ import java.util.Map;
  */
 @Controller
 public class MainController {
+
+    private static Logger logger = Logger.getLogger(MainController.class);
 
     private final BlogSimpleContentRepository blogSimpleContentRepository;
 
@@ -85,11 +88,7 @@ public class MainController {
             modelMap.addAttribute("_csrf", csrfToken);
         }
 
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
 
         return "index";
     }
@@ -101,22 +100,14 @@ public class MainController {
             modelMap.addAttribute("_csrf", csrfToken);
         }
 
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
 
         return "full-width";
     }
 
     @RequestMapping(value = "/about")
     public String about(ModelMap modelMap,HttpServletRequest request) {
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrfToken != null) {
@@ -127,11 +118,7 @@ public class MainController {
 
     @RequestMapping(value = "/contact")
     public String contact(ModelMap modelMap,HttpServletRequest request) {
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrfToken != null) {
@@ -198,13 +185,12 @@ public class MainController {
             //gt-server正常，向gt-server进行二次验证
 
             gtResult = gtSdk.enhencedValidateRequest(challenge, validate, seccode, userid);
-            System.out.println(gtResult);
+            logger.info(gtResult);
         } else {
             // gt-server非正常情况下，进行failback模式验证
-
-            System.out.println("failback:use your own server captcha validate");
+            logger.debug("failback:use your own server captcha validate");
             gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
-            System.out.println(gtResult);
+            logger.info(gtResult);
         }
 
 
@@ -275,37 +261,6 @@ public class MainController {
         return map;
     }
 
-    @RequestMapping("/user/home")
-    public String userHome(ModelMap modelMap,HttpServletRequest request){
-        Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Page<BlogSimpleContentEntity> blogSimpleContentEntities = blogSimpleContentRepository.findAll(new PageRequest(0, 3, sort));
-        List<PostsVo> postsVos = new ArrayList<>();
-        for (BlogSimpleContentEntity blogSimpleContentEntity : blogSimpleContentEntities) {
-            PostsVo postsVo = new PostsVo();
-            postsVo.setArticle_title(blogSimpleContentEntity.getBlogTitle());
-            postsVo.setId(blogSimpleContentEntity.getId());
-            postsVos.add(postsVo);
-        }
-
-        Page<ArchivesEntity> archivesEntityPage = archivesRepository.findAll(new PageRequest(0, 3, sort));
-
-        Page<BlogContentTypeEntity> blogContentTypeEntityPage = blogContentTypeRepository.findAll(new PageRequest(0, 3, sort));
-        modelMap.addAttribute("posts", postsVos);
-        modelMap.addAttribute("archives", archivesEntityPage);
-        modelMap.addAttribute("type", blogContentTypeEntityPage);
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
-
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
-        return "/user/index";
-    }
-
     @RequestMapping("/user/sendBlog")
     public String sendBlog(ModelMap modelMap,HttpServletRequest request){
         List<BlogContentTypeEntity> blogContentTypeEntities = blogContentTypeRepository.findAll();
@@ -315,11 +270,7 @@ public class MainController {
         }
         modelMap.addAttribute("type", blogContentTypeEntities);
 
-        if(!StringUtils.isEmpty(usersService.getUserName())){
-            modelMap.addAttribute("is_login",true);
-        } else {
-            modelMap.addAttribute("is_login",false);
-        }
+        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
         return "/user/send-blog";
     }
 }
