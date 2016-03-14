@@ -51,7 +51,7 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-right">
                             <li class="cl-effect-11"><a href="/" data-hover="Home">Home</a></li>
-                            <li class="cl-effect-11"><a href="/full" data-hover=""></a></li>
+                            <li class="cl-effect-11"><a href="/full" data-hover="">Blog</a></li>
                             <li class="cl-effect-11"><a href="/about" data-hover="About">About</a></li>
                             <li class="cl-effect-11"><a href="/contact" data-hover="Contact">Contact</a></li>
                             #if($is_login)
@@ -146,7 +146,7 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/full"></a></li>
+            <li><a href="/full">Blog</a></li>
             <li><a href="/about">About</a></li>
             <li><a href="/contact">Contact</a></li>
             #if($is_login)
