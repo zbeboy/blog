@@ -17,12 +17,14 @@ var archviesId = 0;
 var typeId = 0;
 
 function createPage(data) {
-    $(".pagination").jBootstrapPage({
-        pageSize : data.pagination.pageSize,
-        total : data.pagination.totalDatas,
-        maxPageButton:data.pagination.buttons,
-        onPageClicked: function(obj, pageIndex) {
-            nextPage(pageIndex,archviesId,typeId);
+    $('#light-pagination').pagination({
+        pages: data.pagination.totalPages,
+        displayedPages: data.pagination.buttons,
+        onPageClick: function(pageNumber, event) {
+            // Callback triggered when a page is clicked
+            // Page number is given as an optional parameter
+            console.log(pageNumber);
+            nextPage(pageNumber-1,archviesId,typeId);
         }
     });
 }
