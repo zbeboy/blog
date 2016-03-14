@@ -18,6 +18,8 @@ function initCaptcha(target) {
         // 将验证码加到id为captcha的元素里
         captchaObj.appendTo(target);
     };
+    //显示遮罩
+    $('#dataRegion').showLoading();
     $.ajax({
         // 获取id，challenge，success（是否启用failback）
         url: '/startCaptcha',
@@ -33,6 +35,8 @@ function initCaptcha(target) {
                 product: 'embed', // 产品形式
                 offline: !data.success
             }, handler);
+            //去除遮罩
+            $('#dataRegion').hideLoading();
         }
     });
 }

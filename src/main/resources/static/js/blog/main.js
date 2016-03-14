@@ -87,11 +87,15 @@ function sendAjax(page, archviesId, typeId) {
 }
 
 function nextPage(page,archviesId, typeId){
+    //显示遮罩
+    $('#dataRegion').showLoading();
     $.post('/articleDatas', {
         'page': page,
         'archviesId': archviesId,
         'typeId': typeId
     }, function (data) {
+        //去除遮罩
+        $('#dataRegion').hideLoading();
         if(data.items.length>0){
             showDatas(data);
         }
