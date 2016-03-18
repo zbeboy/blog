@@ -8,6 +8,14 @@
     <artifactId>blog</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>Spring Boot Blog Sample</name>
+    <description>Spring Boot Blog Sample</description>
+    <url>https://github.com/zbeboy/blog</url>
+    <organization>
+        <name>zbeboy</name>
+        <url>http://zbeboy.vicp.cc</url>
+    </organization>
+
     <!-- use a later Java version -->
     <properties>
             <java.version>1.8</java.version>
