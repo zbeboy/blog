@@ -79,8 +79,9 @@ function sendAjax(page, archviesId, typeId) {
     }, function (data) {
         //去除遮罩
         $('#dataRegion').hideLoading();
+        showDatas(data);
+        $('#light-pagination').empty();
         if(data.items.length>0){
-            showDatas(data);
             createPage(data);
         }
     }, 'json');

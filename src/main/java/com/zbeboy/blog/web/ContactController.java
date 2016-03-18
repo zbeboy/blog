@@ -33,7 +33,7 @@ public class ContactController {
     }
 
     @RequestMapping("/saveContact")
-    public String contact(ContactEntity contactEntity, HttpServletRequest request, ModelMap modelMap) {
+    public String contact(ContactEntity contactEntity, ModelMap modelMap) {
         if (!StringUtils.isEmpty(contactEntity)) {
             contactRepository.save(contactEntity);
             modelMap.addAttribute("contactError", false);
@@ -42,11 +42,7 @@ public class ContactController {
             modelMap.addAttribute("contactError", true);
             modelMap.addAttribute("errorMsg", "参数异常！");
         }
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
+
         return "contact";
     }
 }

@@ -1,5 +1,6 @@
 package com.zbeboy.blog;
 
+import com.zbeboy.blog.interceptor.SpringMVCInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -49,6 +51,11 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
+    public WebConfig webConfig(){
+        return  new WebConfig();
+    }
+
+    @Bean
     public static JdbcTokenRepositoryImpl jdbcTokenRepository(DataSource dataSource) {
         JdbcTokenRepositoryImpl j = new JdbcTokenRepositoryImpl();
         j.setDataSource(dataSource);
@@ -58,6 +65,13 @@ public class Application extends SpringBootServletInitializer {
     public static void main(String[] args) throws Exception {
         new SpringApplicationBuilder(Application.class).run(args);
         /*SpringApplication.run(Application.class, args);//生成war包时需要*/
+    }
+
+    protected static class WebConfig extends WebMvcConfigurerAdapter{
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addWebRequestInterceptor(new SpringMVCInterceptor()).addPathPatterns("/**");
+        }
     }
 
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)

@@ -65,7 +65,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/")
-    public String home(ModelMap modelMap,HttpServletRequest request) {
+    public String home(ModelMap modelMap) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Page<BlogSimpleContentEntity> blogSimpleContentEntities = blogSimpleContentRepository.findAll(new PageRequest(0, 3, sort));
         List<PostsVo> postsVos = new ArrayList<>();
@@ -83,60 +83,28 @@ public class MainController {
         modelMap.addAttribute("archives", archivesEntityPage);
         modelMap.addAttribute("type", blogContentTypeEntityPage);
 
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
-
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
-
         return "index";
     }
 
     @RequestMapping(value = "/full")
-    public String blog(ModelMap modelMap,HttpServletRequest request) {
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
-
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
-
+    public String blog() {
         return "full-width";
     }
 
     @RequestMapping(value = "/about")
-    public String about(ModelMap modelMap,HttpServletRequest request) {
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
-
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
+    public String about() {
         return "about";
     }
 
     @RequestMapping(value = "/contact")
-    public String contact(ModelMap modelMap,HttpServletRequest request) {
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
-
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
-
+    public String contact(ModelMap modelMap) {
         modelMap.addAttribute("contactError",false);
         modelMap.addAttribute("errorMsg","");
-
         return "contact";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(ModelMap modelMap, HttpServletRequest request) {
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
+    public String login() {
         return "login";
     }
 
@@ -205,12 +173,8 @@ public class MainController {
     }
 
     @RequestMapping(value = "/loginError", method = RequestMethod.GET)
-    public String loginError(ModelMap modelMap, HttpServletRequest request) {
+    public String loginError(ModelMap modelMap) {
         modelMap.addAttribute("loginError", true);
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
         return "login";
     }
 
@@ -262,15 +226,10 @@ public class MainController {
     }
 
     @RequestMapping("/user/sendBlog")
-    public String sendBlog(ModelMap modelMap,HttpServletRequest request){
+    public String sendBlog(ModelMap modelMap){
         List<BlogContentTypeEntity> blogContentTypeEntities = blogContentTypeRepository.findAll();
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
         modelMap.addAttribute("type", blogContentTypeEntities);
 
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
         return "/user/send-blog";
     }
 }

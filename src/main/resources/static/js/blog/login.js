@@ -221,7 +221,7 @@ function submitRegist(){
                 $('#registError').text('');
                 Messenger().post(data.msg);
                 setTimeout(function () {
-                    window.location.reload(true);
+                    window.location.href="/login";
                 }, 3000);
             } else {
                 $('#registError').text(data.msg);

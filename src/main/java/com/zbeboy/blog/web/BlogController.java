@@ -208,14 +208,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = "/search")
-    public String search(@RequestParam(value = "search") String search, ModelMap modelMap, HttpServletRequest request) {
-        modelMap.addAttribute("is_login",StringUtils.isEmpty(usersService.getUserName())?false:true);
-
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        if (csrfToken != null) {
-            modelMap.addAttribute("_csrf", csrfToken);
-        }
-
+    public String search(@RequestParam(value = "search") String search, ModelMap modelMap) {
         List<ArticleVo> articleVos = new ArrayList<>();
         List<BlogSimpleContentEntity> blogSimpleContentEntities = blogSimpleContentRepository.findByBlogTitleLike("%" + search + "%");
         for (BlogSimpleContentEntity blogSimpleContentEntity : blogSimpleContentEntities) {
