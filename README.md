@@ -10,3 +10,4 @@ Spring boot sample
 ###7.build to war
 ###8.spring boot flyway
 ###9.spring boot devtools
+###10.send email
