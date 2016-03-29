@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
  * Created by lenovo on 2016-02-20.
  */
 @Service("usersService")
-public class UsersServiceImpl implements UsersService{
+public class UsersServiceImpl implements UsersService {
     @Override
     public String getUserName() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

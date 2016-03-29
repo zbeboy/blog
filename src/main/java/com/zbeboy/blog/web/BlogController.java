@@ -13,9 +13,13 @@ import com.zbeboy.blog.vo.ArticleVo;
 import com.zbeboy.blog.vo.PaginationVo;
 import com.zbeboy.blog.vo.PostsVo;
 import com.zbeboy.blog.vo.SendBlogVo;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -37,7 +41,7 @@ import java.util.*;
 @Controller
 public class BlogController {
 
-    private static Logger logger = Logger.getLogger(BlogController.class);
+    private final Logger log = LoggerFactory.getLogger(BlogController.class);
 
     private final BlogContentRepository blogContentRepository;
 

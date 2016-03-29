@@ -5,11 +5,13 @@ import com.zbeboy.blog.domain.entity.*;
 import com.zbeboy.blog.domain.repository.*;
 import com.zbeboy.blog.geettest.GeetestConfig;
 import com.zbeboy.blog.geettest.GeetestLib;
-import com.zbeboy.blog.service.UsersService;
+import com.zbeboy.blog.service.MailService;
 import com.zbeboy.blog.util.MD5Util;
 import com.zbeboy.blog.vo.PostsVo;
 import com.zbeboy.blog.vo.RegistVo;
-import org.apache.log4j.Logger;
+import org.apache.velocity.app.VelocityEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +41,7 @@ import java.util.Map;
 @Controller
 public class MainController {
 
-    private static Logger logger = Logger.getLogger(MainController.class);
+    private final Logger log = LoggerFactory.getLogger(MainController.class);
 
     private final BlogSimpleContentRepository blogSimpleContentRepository;
 
@@ -51,7 +54,10 @@ public class MainController {
     private final AuthoritiesRepository authoritiesRepository;
 
     @Resource
-    private UsersService usersService;
+    private MailService mailService;
+
+    @Resource
+    private VelocityEngine velocityEngine;
 
     @Autowired
     public MainController(BlogSimpleContentRepository blogSimpleContentRepository, ArchivesRepository archivesRepository,
@@ -153,12 +159,12 @@ public class MainController {
             //gt-server正常，向gt-server进行二次验证
 
             gtResult = gtSdk.enhencedValidateRequest(challenge, validate, seccode, userid);
-            logger.info(gtResult);
+            log.info("gtResult {}",gtResult);
         } else {
             // gt-server非正常情况下，进行failback模式验证
-            logger.debug("failback:use your own server captcha validate");
+            log.debug("failback:use your own server captcha validate");
             gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
-            logger.info(gtResult);
+            log.info("gtResult {}",gtResult);
         }
 
 
@@ -215,6 +221,9 @@ public class MainController {
                 authoritiesEntity.setUsername(StringUtils.trimWhitespace(registVo.getEmail()));
                 authoritiesEntity.setAuthority("ROLE_USER");
                 authoritiesRepository.save(authoritiesEntity);
+                Map<String,Object> emailMap = new HashMap<String,Object>();
+                emailMap.put("username",usersEntity.getUsername());
+                mailService.sendEmail(usersEntity.getUsername(),"0ng", VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,"/mails/registerSuccess.vm","UTF-8",emailMap),false,true);
                 map.put("state", true);
                 map.put("msg", "注册成功！");
             } else {
