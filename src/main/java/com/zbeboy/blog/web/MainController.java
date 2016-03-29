@@ -9,6 +9,8 @@ import com.zbeboy.blog.service.MailService;
 import com.zbeboy.blog.util.MD5Util;
 import com.zbeboy.blog.vo.PostsVo;
 import com.zbeboy.blog.vo.RegistVo;
+import org.apache.commons.lang.CharEncoding;
+import org.apache.commons.lang.CharSet;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,7 +225,7 @@ public class MainController {
                 authoritiesRepository.save(authoritiesEntity);
                 Map<String,Object> emailMap = new HashMap<String,Object>();
                 emailMap.put("username",usersEntity.getUsername());
-                mailService.sendEmail(usersEntity.getUsername(),"0ng", VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,"/mails/registerSuccess.vm","UTF-8",emailMap),false,true);
+                mailService.sendEmail(usersEntity.getUsername(),"0ng", VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,"/mails/registerSuccess.vm", CharEncoding.UTF_8,emailMap),false,true);
                 map.put("state", true);
                 map.put("msg", "注册成功！");
             } else {
