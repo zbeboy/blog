@@ -7,11 +7,9 @@ import com.zbeboy.blog.geettest.GeetestConfig;
 import com.zbeboy.blog.geettest.GeetestLib;
 import com.zbeboy.blog.service.MailService;
 import com.zbeboy.blog.util.MD5Util;
+import com.zbeboy.blog.util.RandomUtil;
 import com.zbeboy.blog.vo.PostsVo;
 import com.zbeboy.blog.vo.RegistVo;
-import org.apache.commons.lang.CharEncoding;
-import org.apache.commons.lang.CharSet;
-import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.ui.velocity.VelocityEngineUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2016/2/4.
@@ -58,9 +53,6 @@ public class MainController {
     @Resource
     private MailService mailService;
 
-    @Resource
-    private VelocityEngine velocityEngine;
-
     @Autowired
     public MainController(BlogSimpleContentRepository blogSimpleContentRepository, ArchivesRepository archivesRepository,
                           BlogContentTypeRepository blogContentTypeRepository, UsersRepository usersRepository,
@@ -72,6 +64,12 @@ public class MainController {
         this.authoritiesRepository = authoritiesRepository;
     }
 
+    /**
+     * 主页
+     *
+     * @param modelMap
+     * @return
+     */
     @RequestMapping(value = "/")
     public String home(ModelMap modelMap) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
@@ -94,31 +92,58 @@ public class MainController {
         return "index";
     }
 
+    /**
+     * blog
+     *
+     * @return
+     */
     @RequestMapping(value = "/full")
     public String blog() {
         return "full-width";
     }
 
+    /**
+     * aout
+     *
+     * @return
+     */
     @RequestMapping(value = "/about")
     public String about() {
         return "about";
     }
 
+    /**
+     * contact
+     *
+     * @param modelMap
+     * @return
+     */
     @RequestMapping(value = "/contact")
     public String contact(ModelMap modelMap) {
-        modelMap.addAttribute("contactError",false);
-        modelMap.addAttribute("errorMsg","");
+        modelMap.addAttribute("contactError", false);
+        modelMap.addAttribute("errorMsg", "");
         return "contact";
     }
 
+    /**
+     * login
+     *
+     * @return
+     */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
         return "login";
     }
 
-    @RequestMapping(value = "/startCaptcha",method = RequestMethod.GET)
+    /**
+     * 初始化极验
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/startCaptcha", method = RequestMethod.GET)
     @ResponseBody
-    public String startCaptcha(HttpServletRequest request){
+    public String startCaptcha(HttpServletRequest request) {
         GeetestLib gtSdk = new GeetestLib(GeetestConfig.getCaptcha_id(), GeetestConfig.getPrivate_key());
 
         String resStr = "{}";
@@ -140,9 +165,15 @@ public class MainController {
         return resStr;
     }
 
-    @RequestMapping(value = "/verifyCaptcha",method = RequestMethod.POST)
+    /**
+     * 检验验证码
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/verifyCaptcha", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxData verifyCaptcha(HttpServletRequest request){
+    public AjaxData verifyCaptcha(HttpServletRequest request) {
         GeetestLib gtSdk = new GeetestLib(GeetestConfig.getCaptcha_id(), GeetestConfig.getPrivate_key());
 
         String challenge = request.getParameter(GeetestLib.fn_geetest_challenge);
@@ -153,7 +184,7 @@ public class MainController {
         int gt_server_status_code = (Integer) request.getSession().getAttribute(gtSdk.gtServerStatusSessionKey);
 
         //从session中获取userid
-        String userid = (String)request.getSession().getAttribute("userid");
+        String userid = (String) request.getSession().getAttribute("userid");
 
         int gtResult = 0;
 
@@ -161,31 +192,42 @@ public class MainController {
             //gt-server正常，向gt-server进行二次验证
 
             gtResult = gtSdk.enhencedValidateRequest(challenge, validate, seccode, userid);
-            log.info("gtResult {}",gtResult);
+            log.info("gtResult {}", gtResult);
         } else {
             // gt-server非正常情况下，进行failback模式验证
             log.debug("failback:use your own server captcha validate");
             gtResult = gtSdk.failbackValidateRequest(challenge, validate, seccode);
-            log.info("gtResult {}",gtResult);
+            log.info("gtResult {}", gtResult);
         }
 
 
         if (gtResult == 1) {
             // 验证成功
             return new AjaxData().success().msg(gtSdk.getVersionInfo());
-        }
-        else {
+        } else {
             // 验证失败
             return new AjaxData().failed().msg("验证码错误!");
         }
     }
 
+    /**
+     * 登录失败
+     *
+     * @param modelMap
+     * @return
+     */
     @RequestMapping(value = "/loginError", method = RequestMethod.GET)
     public String loginError(ModelMap modelMap) {
         modelMap.addAttribute("loginError", true);
         return "login";
     }
 
+    /**
+     * 检验email
+     *
+     * @param email
+     * @return
+     */
     @RequestMapping(value = "/checkEmail")
     @ResponseBody
     public Map<String, Object> checkEmail(@RequestParam("email") String email) {
@@ -194,20 +236,29 @@ public class MainController {
             UsersEntity usersEntity = usersRepository.findOne(email);
             if (StringUtils.isEmpty(usersEntity)) {
                 map.put("state", true);
+                map.put("msg", "邮箱不存在!");
             } else {
                 map.put("state", false);
-                map.put("msg", "邮箱已存在！");
+                map.put("msg", "邮箱已存在!");
             }
         } else {
             map.put("state", false);
-            map.put("msg", "参数为空！");
+            map.put("msg", "参数为空!");
         }
         return map;
     }
 
+    /**
+     * 注册
+     *
+     * @param registVo
+     * @param bindingResult
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/regist")
     @ResponseBody
-    public Map<String, Object> regist(@Valid RegistVo registVo, BindingResult bindingResult) {
+    public Map<String, Object> regist(@Valid RegistVo registVo, BindingResult bindingResult, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
         if (bindingResult.hasErrors()) {
             map.put("state", false);
@@ -218,26 +269,188 @@ public class MainController {
                 usersEntity.setUsername(StringUtils.trimWhitespace(registVo.getEmail()));
                 usersEntity.setPassword(MD5Util.md5(StringUtils.trimWhitespace(registVo.getConfirm_password())));
                 usersEntity.setEnabled(true);
+                usersEntity.setLangKey("zh-CN");
+                usersEntity.setActivationKey(RandomUtil.generateActivationKey());
                 usersRepository.save(usersEntity);
                 AuthoritiesEntity authoritiesEntity = new AuthoritiesEntity();
                 authoritiesEntity.setUsername(StringUtils.trimWhitespace(registVo.getEmail()));
                 authoritiesEntity.setAuthority("ROLE_USER");
                 authoritiesRepository.save(authoritiesEntity);
-                Map<String,Object> emailMap = new HashMap<String,Object>();
-                emailMap.put("username",usersEntity.getUsername());
-                mailService.sendEmail(usersEntity.getUsername(),"0ng", VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,"/mails/registerSuccess.vm", CharEncoding.UTF_8,emailMap),false,true);
+                //baseUrl
+                String path = request.getContextPath();
+                String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
+                mailService.sendActivationEmail(usersEntity, basePath);
                 map.put("state", true);
-                map.put("msg", "注册成功！");
+                map.put("msg", "注册成功，激活邮件已发送到您的邮箱!");
             } else {
                 map.put("state", false);
-                map.put("msg", "请确认密码！");
+                map.put("msg", "请确认密码!");
             }
         }
         return map;
     }
 
+    /**
+     * 激活
+     *
+     * @param key
+     * @param modelMap
+     * @param request
+     * @return
+     */
+    @RequestMapping("/activate")
+    public String activate(@RequestParam("key") String key, ModelMap modelMap, HttpServletRequest request) {
+        if (StringUtils.hasLength(key)) {
+            UsersEntity usersEntity = usersRepository.findByActivationKey(key);
+            if (!ObjectUtils.isEmpty(usersEntity)) {
+                usersEntity.setActivation(true);
+                usersRepository.save(usersEntity);
+                modelMap.addAttribute("status", "您的账号: " + usersEntity.getUsername() + " 激活成功!");
+                //baseUrl
+                String path = request.getContextPath();
+                String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
+                mailService.sendCreationEmail(usersEntity, basePath);
+            } else {
+                modelMap.addAttribute("status", "激活失败，请返回登录页重新激活!");
+            }
+        } else {
+            modelMap.addAttribute("status", "激活失败，请返回登录页重新激活!");
+        }
+        return "activation";
+    }
+
+    /**
+     * 检验是否激活
+     *
+     * @param username
+     * @return
+     */
+    @RequestMapping("/checkActivate")
+    @ResponseBody
+    public AjaxData checkActivate(@RequestParam("username") String username) {
+        if (StringUtils.hasLength(username)) {
+            UsersEntity usersEntity = usersRepository.findOne(username);
+            if (!ObjectUtils.isEmpty(usersEntity)) {
+                if (usersEntity.isActivation()) {
+                    return new AjaxData().success();
+                } else {
+                    return new AjaxData().failed().msg("账号未激活");
+                }
+            } else {
+                return new AjaxData().failed().msg("账号不存在!");
+            }
+        } else {
+            return new AjaxData().failed().msg("参数异常!");
+        }
+    }
+
+    /**
+     * 重新激活
+     *
+     * @param username
+     * @param request
+     * @return
+     */
+    @RequestMapping("/againActivation")
+    @ResponseBody
+    public AjaxData againActivation(@RequestParam("username") String username, HttpServletRequest request) {
+        if (StringUtils.hasLength(username)) {
+            UsersEntity usersEntity = usersRepository.findOne(username);
+            if (!ObjectUtils.isEmpty(usersEntity)) {
+                usersEntity.setActivationKey(RandomUtil.generateActivationKey());
+                //baseUrl
+                String path = request.getContextPath();
+                String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
+                mailService.sendActivationEmail(usersEntity, basePath);
+                usersRepository.save(usersEntity);
+                return new AjaxData().success().msg("激活邮件已发送，请登录邮箱激活!");
+            } else {
+                return new AjaxData().failed().msg("账号不存在!");
+            }
+        } else {
+            return new AjaxData().failed().msg("参数异常!");
+        }
+    }
+
+    /**
+     * 重置密码
+     *
+     * @return
+     */
+    @RequestMapping("/reset")
+    public String reset() {
+        return "reset";
+    }
+
+    /**
+     * 重置
+     *
+     * @param username
+     * @param request
+     * @return
+     */
+    @RequestMapping("/resetPassword")
+    @ResponseBody
+    public AjaxData resetPassword(@RequestParam("username") String username, HttpServletRequest request) {
+        if (StringUtils.hasLength(username)) {
+            UsersEntity usersEntity = usersRepository.findOne(username);
+            if (!ObjectUtils.isEmpty(usersEntity)) {
+                if (usersEntity.isActivation()) {
+                    usersEntity.setResetKey(RandomUtil.generateResetKey());
+                    usersEntity.setResetDate(new Date());
+                    //baseUrl
+                    String path = request.getContextPath();
+                    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
+                    mailService.sendPasswordResetMail(usersEntity, basePath);
+                    usersRepository.save(usersEntity);
+                    return new AjaxData().success().msg("激活邮件已发送，请登录邮箱激活!");
+                } else {
+                    return new AjaxData().failed().msg("请先激活账号!");
+                }
+            } else {
+                return new AjaxData().failed().msg("账号不存在!");
+            }
+        } else {
+            return new AjaxData().failed().msg("参数异常!");
+        }
+    }
+
+    /**
+     * 完成重置
+     *
+     * @param key
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping("/reset/finish")
+    public String resetFinish(@RequestParam("key") String key, ModelMap modelMap) {
+        if (StringUtils.hasLength(key)) {
+            UsersEntity usersEntity = usersRepository.findByResetKey(key);
+            if (!ObjectUtils.isEmpty(usersEntity)) {
+                String password = RandomUtil.generatePassword();
+                usersEntity.setPassword(MD5Util.md5(password));
+                usersRepository.save(usersEntity);
+                modelMap.addAttribute("status", "您的账号: " + usersEntity.getUsername() + " 已成功重置密码为: ");
+                modelMap.addAttribute("password", password);
+            } else {
+                modelMap.addAttribute("status", "重置失败!");
+                modelMap.addAttribute("password", "");
+            }
+        } else {
+            modelMap.addAttribute("status", "参数异常，重置密码失败!");
+            modelMap.addAttribute("password", "");
+        }
+        return "reset-finish";
+    }
+
+    /**
+     * 发表博客
+     *
+     * @param modelMap
+     * @return
+     */
     @RequestMapping("/user/sendBlog")
-    public String sendBlog(ModelMap modelMap){
+    public String sendBlog(ModelMap modelMap) {
         List<BlogContentTypeEntity> blogContentTypeEntities = blogContentTypeRepository.findAll();
         modelMap.addAttribute("type", blogContentTypeEntities);
 

@@ -7,6 +7,7 @@ import javax.persistence.IdClass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2016/2/4.
@@ -25,11 +26,31 @@ public class UsersEntity {
     @Column(nullable = false)
     private boolean enabled;
 
-    @Column(name = "code")
-    private String code;
+    @Size(min = 2, max = 5)
+    @Column(name = "lang_key", length = 5)
+    private String langKey;
 
-    @Column(name = "is_pass")
-    private boolean is_pass;
+    @Size(max = 20)
+    @Column(name = "activation_key", length = 20)
+    private String activationKey;
+
+    @Column(name = "is_activation")
+    private boolean isActivation;
+
+    @Size(max = 20)
+    @Column(name = "reset_key",length = 20)
+    private String resetKey;
+
+    @Column(name = "reset_date", nullable = true)
+    private Date resetDate;
+
+    public Date getResetDate() {
+        return resetDate;
+    }
+
+    public void setResetDate(Date resetDate) {
+        this.resetDate = resetDate;
+    }
 
     public String getUsername() {
         return username;
@@ -55,20 +76,36 @@ public class UsersEntity {
         this.enabled = enabled;
     }
 
-    public String getCode() {
-        return code;
+    public String getLangKey() {
+        return langKey;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setLangKey(String langKey) {
+        this.langKey = langKey;
     }
 
-    public boolean is_pass() {
-        return is_pass;
+    public String getActivationKey() {
+        return activationKey;
     }
 
-    public void setIs_pass(boolean is_pass) {
-        this.is_pass = is_pass;
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+    }
+
+    public boolean isActivation() {
+        return isActivation;
+    }
+
+    public void setActivation(boolean activation) {
+        isActivation = activation;
+    }
+
+    public String getResetKey() {
+        return resetKey;
+    }
+
+    public void setResetKey(String resetKey) {
+        this.resetKey = resetKey;
     }
 
     @Override
@@ -77,8 +114,11 @@ public class UsersEntity {
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
-                ", code='" + code + '\'' +
-                ", is_pass=" + is_pass +
+                ", langKey='" + langKey + '\'' +
+                ", activationKey='" + activationKey + '\'' +
+                ", isActivation=" + isActivation +
+                ", resetKey='" + resetKey + '\'' +
+                ", resetDate=" + resetDate +
                 '}';
     }
 }

@@ -67,6 +67,13 @@ public class BlogController {
         this.usersRepository = usersRepository;
     }
 
+    /**
+     * 文章数据
+     * @param page
+     * @param archviesId
+     * @param typeId
+     * @return
+     */
     @RequestMapping(value = "/articleDatas")
     @ResponseBody
     public Map<String, Object> articleDatas(int page, @RequestParam(value = "archviesId", defaultValue = "0") int archviesId,
@@ -115,6 +122,13 @@ public class BlogController {
         return map;
     }
 
+    /**
+     * 文章单条数据
+     * @param blogSimpleContentId
+     * @param modelMap
+     * @param request
+     * @return
+     */
     @RequestMapping("/article")
     public String singleArticle(@RequestParam(value = "id", defaultValue = "0") int blogSimpleContentId, ModelMap modelMap,
                                 HttpServletRequest request) {
@@ -164,6 +178,11 @@ public class BlogController {
 
     }
 
+    /**
+     * 保存文章
+     * @param articleDatas
+     * @return
+     */
     @RequestMapping(value = "/user/saveArticle", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> saveArtitcle(@RequestParam(value = "articledatas") String articleDatas) {
@@ -211,6 +230,12 @@ public class BlogController {
         return map;
     }
 
+    /**
+     * 搜索
+     * @param search
+     * @param modelMap
+     * @return
+     */
     @RequestMapping(value = "/search")
     public String search(@RequestParam(value = "search") String search, ModelMap modelMap) {
         List<ArticleVo> articleVos = new ArrayList<>();

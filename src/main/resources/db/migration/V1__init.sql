@@ -1,9 +1,12 @@
 create table users(
 	username varchar(200) not null primary key,
-	password varchar(500) not null,
+	password varchar(2000) not null,
 	enabled boolean not null,
-	code varchar(6),
-	is_pass boolean default false
+	lang_key varchar(5),
+	activation_key varchar(20),
+	is_activation boolean default false,
+	reset_key varchar(20),
+	reset_date datetime  DEFAULT CURRENT_TIMESTAMP
 );
 
 create table authorities(

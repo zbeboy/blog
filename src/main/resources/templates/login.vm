@@ -77,7 +77,7 @@
         <div class="row">
             <main class="col-md-12" id="dataRegion">
 
-                <div class="col-sm-6 col-sm-offset-3 form-box" id="loginForm" style="display:block;" >
+                <div class="col-sm-6 col-sm-offset-3 form-box show" id="loginForm">
                     <div class="form-top">
                         <div class="pull-left">
                             <h3>Login to our site</h3>
@@ -103,7 +103,7 @@
                                 <div id="captcha"></div>
                             </div>
                             <div class="pull-right">
-                                <a href="javascript:;" onclick="toRegist();" class="text-primary">Regist Now</a>
+                                <em><a href="/reset" >forget password?</a></em>&nbsp;&nbsp;<a href="javascript:;" onclick="toRegist();" class="text-primary">Regist Now</a>
                             </div>
                             <br/>
                             <p class="text-danger" id="loginError">
@@ -117,7 +117,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-sm-offset-3 form-box" id="registForm" style="display:none;">
+                <div class="col-sm-6 col-sm-offset-3 form-box hidden" id="registForm">
                     <div class="form-top">
                         <div class="pull-left">
                             <h3>Regist to our site</h3>

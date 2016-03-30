@@ -25,6 +25,12 @@ public class ContactController {
         this.contactRepository = contactRepository;
     }
 
+    /**
+     * 保存联系信息
+     * @param contactEntity
+     * @param modelMap
+     * @return
+     */
     @RequestMapping("/saveContact")
     public String contact(ContactEntity contactEntity, ModelMap modelMap) {
         if (!StringUtils.isEmpty(contactEntity)) {

@@ -42,8 +42,8 @@ function initCaptcha(target) {
 }
 
 function toRegist() {
-    $('#registForm').css('display','block');
-    $('#loginForm').css('display','none');
+    $('#registForm').removeClass('hidden').addClass('show');
+    $('#loginForm').removeClass('show').addClass('hidden');
     $('#email').focus();
     initCaptcha('#registCaptcha');
 }
@@ -195,12 +195,50 @@ function valideCaptcha(data,func,errorId) {
 }
 
 /**
+ * 检验激活
+ */
+function activation(){
+    //显示遮罩
+    $('#dataRegion').showLoading();
+    $.post('/checkActivate',{
+        'username':$('#username').val().trim()
+    },function(data){
+        //去除遮罩
+        $('#dataRegion').hideLoading();
+       if(data.state){
+           $('#loginData').submit();
+       } else {
+           $('#loginError').text(data.msg+"，");
+           $('#loginError').append($('<a href="javascript:againActivation();"  class="text-primary" >').text( ' 重新激活'));
+       }
+    });
+}
+
+/**
+ * 重新激活
+ */
+function againActivation(){
+    //显示遮罩
+    $('#dataRegion').showLoading();
+    $.post('/againActivation',{
+        'username':$('#username').val().trim()
+    },function(data){
+        //去除遮罩
+        $('#dataRegion').hideLoading();
+        if(data.state){
+            Messenger().post(data.msg);
+        } else {
+            $('#loginError').text(data.msg);
+            Messenger().post(data.msg);
+        }
+    });
+}
+
+/**
  * 提交登录数据
  */
 function submitLogin(){
-    //显示遮罩
-    $('#dataRegion').showLoading();
-    $('#loginData').submit();
+    activation();
 }
 
 /**
