@@ -105,4 +105,5 @@ function nextPage(page,archviesId, typeId){
 
 $(document).ready(function () {
     sendAjax(0, archviesId, typeId);
+    $("body").forkme("View Forkme","https://github.com/zbeboy/blog");
 });

@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="/css/message/messenger.css">
     <link rel="stylesheet" href="/css/message/messenger-theme-air.css">
     <link rel="stylesheet" href="/css/showloading/showLoading.css">
+    <!--引用forkme样式-->
+    <link rel="stylesheet" href="/css/forkme/forkme.css">
 
     <!-- js -->
     <script src="/js/jquery-2.1.3.min.js"></script>
@@ -29,6 +31,8 @@
     <script src="/js/csrf.js"></script>
     <script src="/js/message/messenger.min.js"></script>
     <script src="/js/showloading/jquery.showLoading.min.js"></script>
+    <!--引用forkme脚本-->
+    <script src="/js/forkme/forkme-1.0.js"></script>
 </head>
 
 <body>

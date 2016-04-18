@@ -102,3 +102,7 @@ function nextPage(page,archviesId, typeId){
         }
     }, 'json');
 }
+
+$(document).ready(function () {
+    $("body").forkme("View Forkme","https://github.com/zbeboy/blog");
+});

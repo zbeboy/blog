@@ -73,4 +73,5 @@ $(document).ready(function () {
         extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
         theme: 'air'
     };
+    $("body").forkme("View Forkme","https://github.com/zbeboy/blog");
 });
