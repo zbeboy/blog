@@ -97,7 +97,7 @@ public class Application extends SpringBootServletInitializer {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests().antMatchers("/css/**", "/js/**", "/fonts/**", "/images/**", "/files/**", "/i18n/**","/").permitAll()
+            http.authorizeRequests().antMatchers("/css/**", "/js/**", "/fonts/**", "/images/**", "/files/**", "/i18n/**").permitAll()
                     .and().formLogin().loginPage("/login").defaultSuccessUrl("/", true)
                     .failureUrl("/loginError").permitAll().and().sessionManagement().invalidSessionUrl("/login")
                     .and().logout().logoutSuccessUrl("/").permitAll().invalidateHttpSession(true)
